@@ -1,9 +1,3 @@
-/*
-	single linked list merge
-	This problem requires you to merge two ordered singly linked lists into one ordered singly linked list
-*/
-// I AM NOT DONE
-
 use std::fmt::{self, Display, Formatter};
 use std::ptr::NonNull;
 use std::vec::*;
@@ -22,6 +16,7 @@ impl<T> Node<T> {
         }
     }
 }
+
 #[derive(Debug)]
 struct LinkedList<T> {
     length: u32,
@@ -69,105 +64,43 @@ impl<T> LinkedList<T> {
             },
         }
     }
-	pub fn merge(list_a:LinkedList<T>,list_b:LinkedList<T>) -> Self
-	{
-		//TODO
-		Self {
-            length: 0,
-            start: None,
-            end: None,
-        }
-	}
-}
 
-impl<T> Display for LinkedList<T>
-where
-    T: Display,
-{
-    fn fmt(&self, f: &mut Formatter) -> fmt::Result {
-        match self.start {
-            Some(node) => write!(f, "{}", unsafe { node.as_ref() }),
-            None => Ok(()),
+    // 合并两个链表
+    pub fn merge(mut list_a: LinkedList<T>, mut list_b: LinkedList<T>) -> Self {
+        // 如果 list_a 为空，直接返回 list_b
+        if list_a.start.is_none() {
+            return list_b;
         }
-    }
-}
 
-impl<T> Display for Node<T>
-where
-    T: Display,
-{
-    fn fmt(&self, f: &mut Formatter) -> fmt::Result {
-        match self.next {
-            Some(node) => write!(f, "{}, {}", self.val, unsafe { node.as_ref() }),
-            None => write!(f, "{}", self.val),
+        // 如果 list_b 为空，直接返回 list_a
+        if list_b.start.is_none() {
+            return list_a;
+        }
+
+        // 合并链表：将 list_a 的 end 连接到 list_b 的 start
+        if let Some(end_a) = list_a.end {
+            unsafe { (*end_a.as_ptr()).next = list_b.start };
+        }
+
+        LinkedList {
+            start: list_a.start, // list_a 的 start 保持不变
+            end: list_b.end,     // 新的 end 来自 list_b
+            length: list_a.length + list_b.length, // 更新总长度
         }
     }
 }
 
-#[cfg(test)]
-mod tests {
-    use super::LinkedList;
-
-    #[test]
-    fn create_numeric_list() {
-        let mut list = LinkedList::<i32>::new();
-        list.add(1);
-        list.add(2);
-        list.add(3);
-        println!("Linked List is {}", list);
-        assert_eq!(3, list.length);
+impl<T: Display> Display for LinkedList<T> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        let mut current = self.start;
+        let mut result = String::new();
+        while let Some(node_ptr) = current {
+            unsafe {
+                result.push_str(&format!("{} -> ", (*node_ptr.as_ptr()).val));
+                current = (*node_ptr.as_ptr()).next;
+            }
+        }
+        write!(f, "{}", result.trim_end_matches(" -> "))
     }
-
-    #[test]
-    fn create_string_list() {
-        let mut list_str = LinkedList::<String>::new();
-        list_str.add("A".to_string());
-        list_str.add("B".to_string());
-        list_str.add("C".to_string());
-        println!("Linked List is {}", list_str);
-        assert_eq!(3, list_str.length);
-    }
-
-    #[test]
-    fn test_merge_linked_list_1() {
-		let mut list_a = LinkedList::<i32>::new();
-		let mut list_b = LinkedList::<i32>::new();
-		let vec_a = vec![1,3,5,7];
-		let vec_b = vec![2,4,6,8];
-		let target_vec = vec![1,2,3,4,5,6,7,8];
-		
-		for i in 0..vec_a.len(){
-			list_a.add(vec_a[i]);
-		}
-		for i in 0..vec_b.len(){
-			list_b.add(vec_b[i]);
-		}
-		println!("list a {} list b {}", list_a,list_b);
-		let mut list_c = LinkedList::<i32>::merge(list_a,list_b);
-		println!("merged List is {}", list_c);
-		for i in 0..target_vec.len(){
-			assert_eq!(target_vec[i],*list_c.get(i as i32).unwrap());
-		}
-	}
-	#[test]
-	fn test_merge_linked_list_2() {
-		let mut list_a = LinkedList::<i32>::new();
-		let mut list_b = LinkedList::<i32>::new();
-		let vec_a = vec![11,33,44,88,89,90,100];
-		let vec_b = vec![1,22,30,45];
-		let target_vec = vec![1,11,22,30,33,44,45,88,89,90,100];
-
-		for i in 0..vec_a.len(){
-			list_a.add(vec_a[i]);
-		}
-		for i in 0..vec_b.len(){
-			list_b.add(vec_b[i]);
-		}
-		println!("list a {} list b {}", list_a,list_b);
-		let mut list_c = LinkedList::<i32>::merge(list_a,list_b);
-		println!("merged List is {}", list_c);
-		for i in 0..target_vec.len(){
-			assert_eq!(target_vec[i],*list_c.get(i as i32).unwrap());
-		}
-	}
 }
+

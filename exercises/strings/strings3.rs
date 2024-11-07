@@ -1,23 +1,13 @@
-// strings3.rs
-//
-// Execute `rustlings hint strings3` or use the `hint` watch subcommand for a
-// hint.
-
-// I AM NOT DONE
-
 fn trim_me(input: &str) -> String {
-    // TODO: Remove whitespace from both ends of a string!
-    ???
+    input.trim().to_string() // 使用 trim() 移除字符串两端的空格
 }
 
 fn compose_me(input: &str) -> String {
-    // TODO: Add " world!" to the string! There's multiple ways to do this!
-    ???
+    format!("{} world!", input) // 使用 format! 将 " world!" 连接到字符串的后面
 }
 
 fn replace_me(input: &str) -> String {
-    // TODO: Replace "cars" in the string with "balloons"!
-    ???
+    input.replace("cars", "balloons") // 使用 replace() 将 "cars" 替换为 "balloons"
 }
 
 #[cfg(test)]
@@ -43,3 +33,4 @@ mod tests {
         assert_eq!(replace_me("I love to look at cars"), "I love to look at balloons");
     }
 }
+

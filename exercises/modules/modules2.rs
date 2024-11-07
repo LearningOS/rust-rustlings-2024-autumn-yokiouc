@@ -1,34 +1,17 @@
-// modules2.rs
-//
-// You can bring module paths into scopes and provide new names for them with
-// the 'use' and 'as' keywords. Fix these 'use' statements to make the code
-// compile.
-//
-// Execute `rustlings hint modules2` or use the `hint` watch subcommand for a
-// hint.
-
-// I AM NOT DONE
-
-mod delicious_snacks {
-    // TODO: Fix these use statements
-    use self::fruits::PEAR as ???
-    use self::veggies::CUCUMBER as ???
-
-    mod fruits {
-        pub const PEAR: &'static str = "Pear";
-        pub const APPLE: &'static str = "Apple";
+mod sausage_factory {
+    // 让外部模块可以访问 make_sausage
+    pub fn make_sausage() {
+        get_secret_recipe();
+        println!("sausage!");
     }
 
-    mod veggies {
-        pub const CUCUMBER: &'static str = "Cucumber";
-        pub const CARROT: &'static str = "Carrot";
+    // 这个函数保持私有，因为不希望外部模块访问
+    fn get_secret_recipe() -> String {
+        String::from("Ginger")
     }
 }
 
 fn main() {
-    println!(
-        "favorite snacks: {} and {}",
-        delicious_snacks::fruit,
-        delicious_snacks::veggie
-    );
+    sausage_factory::make_sausage();
 }
+

@@ -1,15 +1,6 @@
-// lifetimes3.rs
-//
-// Lifetimes are also needed when structs hold references.
-//
-// Execute `rustlings hint lifetimes3` or use the `hint` watch subcommand for a
-// hint.
-
-// I AM NOT DONE
-
-struct Book {
-    author: &str,
-    title: &str,
+struct Book<'a> {
+    author: &'a str,
+    title: &'a str,
 }
 
 fn main() {
@@ -19,3 +10,4 @@ fn main() {
 
     println!("{} by {}", book.title, book.author);
 }
+

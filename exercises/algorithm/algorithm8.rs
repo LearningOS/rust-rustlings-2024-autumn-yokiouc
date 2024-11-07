@@ -1,9 +1,3 @@
-/*
-	queue
-	This question requires you to use queues to implement the functionality of the stac
-*/
-// I AM NOT DONE
-
 #[derive(Debug)]
 pub struct Queue<T> {
     elements: Vec<T>,
@@ -52,41 +46,58 @@ impl<T> Default for Queue<T> {
     }
 }
 
-pub struct myStack<T>
-{
-	//TODO
-	q1:Queue<T>,
-	q2:Queue<T>
+pub struct myStack<T> {
+    q1: Queue<T>,
+    q2: Queue<T>,
 }
+
 impl<T> myStack<T> {
     pub fn new() -> Self {
         Self {
-			//TODO
-			q1:Queue::<T>::new(),
-			q2:Queue::<T>::new()
+            q1: Queue::<T>::new(),
+            q2: Queue::<T>::new(),
         }
     }
+
     pub fn push(&mut self, elem: T) {
-        //TODO
+        // 将元素直接添加到 q1 中
+        self.q1.enqueue(elem);
     }
+
     pub fn pop(&mut self) -> Result<T, &str> {
-        //TODO
-		Err("Stack is empty")
+        // 如果 q1 为空，表示栈为空
+        if self.q1.is_empty() {
+            return Err("Stack is empty");
+        }
+
+        // 将 q1 中的元素逐个移到 q2 中，只剩最后一个元素
+        while self.q1.size() > 1 {
+            let elem = self.q1.dequeue().unwrap();
+            self.q2.enqueue(elem);
+        }
+
+        // 弹出最后一个元素，即为栈顶元素
+        let popped_elem = self.q1.dequeue().unwrap();
+
+        // 交换 q1 和 q2，确保 q1 始终保存元素
+        std::mem::swap(&mut self.q1, &mut self.q2);
+
+        Ok(popped_elem)
     }
+
     pub fn is_empty(&self) -> bool {
-		//TODO
-        true
+        self.q1.is_empty()
     }
 }
 
 #[cfg(test)]
 mod tests {
-	use super::*;
-	
-	#[test]
-	fn test_queue(){
-		let mut s = myStack::<i32>::new();
-		assert_eq!(s.pop(), Err("Stack is empty"));
+    use super::*;
+
+    #[test]
+    fn test_queue() {
+        let mut s = myStack::<i32>::new();
+        assert_eq!(s.pop(), Err("Stack is empty"));
         s.push(1);
         s.push(2);
         s.push(3);
@@ -100,5 +111,6 @@ mod tests {
         assert_eq!(s.pop(), Ok(1));
         assert_eq!(s.pop(), Err("Stack is empty"));
         assert_eq!(s.is_empty(), true);
-	}
+    }
 }
+

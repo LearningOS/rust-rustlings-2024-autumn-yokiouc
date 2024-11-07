@@ -1,38 +1,12 @@
-// errors5.rs
-//
-// This program uses an altered version of the code from errors4.
-//
-// This exercise uses some concepts that we won't get to until later in the
-// course, like `Box` and the `From` trait. It's not important to understand
-// them in detail right now, but you can read ahead if you like. For now, think
-// of the `Box<dyn ???>` type as an "I want anything that does ???" type, which,
-// given Rust's usual standards for runtime safety, should strike you as
-// somewhat lenient!
-//
-// In short, this particular use case for boxes is for when you want to own a
-// value and you care only that it is a type which implements a particular
-// trait. To do so, The Box is declared as of type Box<dyn Trait> where Trait is
-// the trait the compiler looks for on any value used in that context. For this
-// exercise, that context is the potential errors which can be returned in a
-// Result.
-//
-// What can we use to describe both errors? In other words, is there a trait
-// which both errors implement?
-//
-// Execute `rustlings hint errors5` or use the `hint` watch subcommand for a
-// hint.
-
-// I AM NOT DONE
-
 use std::error;
 use std::fmt;
 use std::num::ParseIntError;
 
-// TODO: update the return type of `main()` to make this compile.
-fn main() -> Result<(), Box<dyn ???>> {
+// 使用 Box<dyn error::Error> 作为错误类型
+fn main() -> Result<(), Box<dyn error::Error>> {
     let pretend_user_input = "42";
-    let x: i64 = pretend_user_input.parse()?;
-    println!("output={:?}", PositiveNonzeroInteger::new(x)?);
+    let x: i64 = pretend_user_input.parse()?; // 可能会返回 ParseIntError
+    println!("output={:?}", PositiveNonzeroInteger::new(x)?); // 可能会返回 CreationError
     Ok(())
 }
 
@@ -57,7 +31,7 @@ impl PositiveNonzeroInteger {
     }
 }
 
-// This is required so that `CreationError` can implement `error::Error`.
+// 让 CreationError 实现 fmt::Display，这样它可以作为 std::error::Error 的一部分
 impl fmt::Display for CreationError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let description = match *self {
@@ -68,4 +42,6 @@ impl fmt::Display for CreationError {
     }
 }
 
+// 让 CreationError 实现 std::error::Error
 impl error::Error for CreationError {}
+
